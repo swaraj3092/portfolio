@@ -176,7 +176,7 @@ DATA_CONTENT:
   const socials = [
     { icon: Github, label: 'GitHub', href: 'https://github.com/swaraj3092', sub: 'swaraj3092' },
     { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/swaraj-kumar-behera-b48b07325/', sub: 'Connect' },
-    { icon: Globe, label: 'Portfolio', href: '#', sub: 'Source_Asset' },
+    { icon: Globe, label: 'Portfolio', href: 'https://skb-folio.vercel.app', sub: 'Source_Asset' },
   ];
 
   return (

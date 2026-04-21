@@ -65,7 +65,7 @@ A high-fidelity, immersive portfolio showcasing the intersection of **Artificial
 ## 📫 Contact Operations
 
 *   **Owner**: Swaraj Kumar Behera
-*   **Site**: [Live Demo](https://swarajbehera.vercel.app)
+*   **Site**: [Live Demo](https://skb-folio.vercel.app)
 *   **Signal**: [swarajbehera923@gmail.com](mailto:swarajbehera923@gmail.com)
 *   **Neural Link**: [LinkedIn](https://www.linkedin.com/in/swaraj-kumar-behera-b48b07325/)
 
