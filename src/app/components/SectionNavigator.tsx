@@ -74,6 +74,8 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   // Sync dots with scroll
   useEffect(() => {
+    let lastActive = activeRef.current;
+
     const handleScroll = () => {
       if (lockRef.current) return;
 
@@ -83,6 +85,13 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el && scrollPos >= el.offsetTop) {
+          if (i !== lastActive) {
+            // Section changed via manual scroll
+            setIsBreaching(true);
+            soundManager.play('slash', 0.2);
+            setTimeout(() => setIsBreaching(false), 600);
+            lastActive = i;
+          }
           activeRef.current = i;
           setActive(i);
           break;
@@ -98,35 +107,31 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* Optimized Symbiote Breach - High-Speed Performance Version */}
+      {/* High-Visibility Symbiote Breach */}
       {isBreaching && (
-        <div className="fixed inset-0 pointer-events-none z-[10000] overflow-hidden">
-          {/* Hardware-accelerated Flash */}
+        <div className="fixed inset-0 pointer-events-none z-[99999] overflow-hidden">
+          {/* Main Dark Wash - Guaranteed Visibility */}
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.4, 0] }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="absolute inset-0 bg-[#dc143c]/10"
-            style={{ willChange: "opacity" }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 0.3, times: [0, 0.4, 1] }}
+            className="absolute inset-0 bg-black z-10"
           />
 
-          {/* Fast Scanline - Simplified */}
+          {/* Crimson Energy Burst */}
           <motion.div 
-            initial={{ y: "-10%" }}
-            animate={{ y: "110%" }}
-            transition={{ duration: 0.5, ease: "linear" }}
-            className="absolute left-0 right-0 h-1 bg-[#dc143c] shadow-[0_0_15px_#dc143c] z-20"
-            style={{ willChange: "transform" }}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: [0.8, 1.1], opacity: [0, 0.5, 0] }}
+            transition={{ duration: 0.4 }}
+            className="absolute inset-0 bg-gradient-to-t from-[#dc143c] via-transparent to-[#dc143c] mix-blend-screen z-20"
           />
 
-          {/* Impact Glitch Pulse */}
+          {/* Tactical Bio-Scanner */}
           <motion.div 
-            animate={{ 
-              opacity: [0, 0.1, 0],
-              scale: [1, 1.05, 1]
-            }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-white/5 mix-blend-overlay"
+            initial={{ x: "-100%" }}
+            animate={{ x: "100%" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="absolute top-0 bottom-0 w-1 bg-[#dc143c] shadow-[0_0_30px_#dc143c] z-30"
           />
         </div>
       )}
