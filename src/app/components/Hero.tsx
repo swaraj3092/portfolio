@@ -104,65 +104,52 @@ export function Hero({ minimalist, setMinimalist }: { minimalist: boolean; setMi
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#060305] to-transparent pointer-events-none" />
 
       <div className="container mx-auto px-6 z-10 relative pt-12">
-        <div className="flex flex-col items-center text-center max-w-6xl mx-auto mt-8 mb-20">
-
-          {/* Cinematic Status HUD (Horizontal) */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="w-full flex flex-col md:flex-row items-center justify-center gap-4 mb-16 relative"
+        {/* Side HUD - Exclusive to Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, delay: 0.4 }}
+          className="absolute left-6 top-12 hidden xl:flex flex-col gap-4 z-20"
+        >
+          <div 
+            className="flex items-center gap-4 px-5 py-2.5"
+            style={{ 
+              border: '1px solid rgba(220,20,60,0.3)',
+              background: 'rgba(220,20,60,0.05)',
+              backdropFilter: 'blur(10px)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 80%, 90% 100%, 0 100%)'
+            }}
           >
-            {/* Status Indicator */}
+            <motion.div 
+              animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-1.5 h-1.5 rounded-full bg-[#dc143c] shadow-[0_0_10px_#dc143c]" 
+            />
+            <span className="text-[#dc143c] tracking-[0.4em] font-bold uppercase text-[9px]" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+              OPEN_FOR_OPPORTUNITIES
+            </span>
+          </div>
+
+          {highScore > 0 && (
             <div 
-              className="flex items-center gap-4 px-6 py-2.5"
+              className="flex items-center justify-between gap-6 px-5 py-2"
               style={{ 
-                border: '1px solid rgba(220,20,60,0.35)',
-                background: 'linear-gradient(90deg, rgba(220,20,60,0.08), transparent)',
-                backdropFilter: 'blur(10px)',
-                clipPath: 'polygon(0 0, 100% 0, 100% 70%, 95% 100%, 0 100%)'
+                border: '1px solid rgba(220,20,60,0.15)',
+                background: 'rgba(6,3,5,0.4)',
+                backdropFilter: 'blur(8px)',
+                clipPath: 'polygon(0 0, 95% 0, 100% 30%, 100% 100%, 0 100%)'
               }}
             >
-              <motion.div 
-                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-2 h-2 rounded-full bg-[#dc143c] shadow-[0_0_12px_#dc143c]" 
-              />
-              <span 
-                className="text-[#dc143c] tracking-[0.4em] font-black uppercase text-[10px]"
-                style={{ fontFamily: 'Orbitron, sans-serif' }}
-              >
-                OPEN_FOR_OPPORTUNITIES
+              <span className="text-[#dc143c]/60 tracking-[0.3em] font-bold uppercase text-[8px]" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                LEGACY_SCORE
+              </span>
+              <span className="text-white font-black tracking-[0.1em] text-[11px]" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                {highScore.toString().padStart(6, '0')}
               </span>
             </div>
-
-            {/* High Score Sync */}
-            {highScore > 0 && (
-              <div 
-                className="flex items-center gap-4 px-6 py-2.5"
-                style={{ 
-                  border: '1px solid rgba(220,20,60,0.2)',
-                  background: 'rgba(6,3,5,0.4)',
-                  backdropFilter: 'blur(10px)',
-                  clipPath: 'polygon(5% 0, 100% 0, 100% 100%, 0 100%, 0 30%)'
-                }}
-              >
-                <span 
-                  className="text-[#dc143c]/60 tracking-[0.3em] font-bold uppercase text-[9px]"
-                  style={{ fontFamily: 'Orbitron, sans-serif' }}
-                >
-                  LEGACY_SCORE
-                </span>
-                <span 
-                  className="text-white font-black tracking-[0.1em] text-[12px]"
-                  style={{ fontFamily: 'Orbitron, sans-serif' }}
-                >
-                  {highScore.toString().padStart(6, '0')}
-                </span>
-              </div>
-            )}
-          </motion.div>
-
+          )}
+        </motion.div>
+        <div className="flex flex-col items-center text-center max-w-6xl mx-auto mt-8 mb-20">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ 
