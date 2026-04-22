@@ -16,43 +16,56 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
   const [scratching, setScratching] = useState(false);
   const lockRef = useRef(false);
   const activeRef = useRef(0);
-  const [scratches, setScratches] = useState<{ x1: string; y1: string; x2: string; y2: string; w: number; o: number; color: string }[]>([]);
+  const [webLines, setWebLines] = useState<{ x1: string; y1: string; x2: string; y2: string; color: string; delay: number }[]>([]);
 
-  const generateScratches = () => {
-    const newLines = [];
-    const count = 8 + Math.floor(Math.random() * 6);
-    for (let i = 0; i < count; i++) {
-      const isHorizontal = Math.random() > 0.5;
-      const color = Math.random() > 0.4 ? "#dc143c" : "#003cdc"; 
-      if (isHorizontal) {
-        newLines.push({
-          x1: "-10%", y1: `${Math.random() * 110}%`,
-          x2: "110%", y2: `${Math.random() * 110}%`,
-          w: 0.5 + Math.random() * 1.5,
-          o: 0.3 + Math.random() * 0.6,
-          color
-        });
-      } else {
-        newLines.push({
-          x1: `${Math.random() * 110}%`, y1: "-10%",
-          x2: `${Math.random() * 110}%`, y2: "110%",
-          w: 0.5 + Math.random() * 1.5,
-          o: 0.3 + Math.random() * 0.6,
-          color
+  const generateWeb = () => {
+    const lines = [];
+    const centerX = 50 + (Math.random() - 0.5) * 20; // Random center near middle
+    const centerY = 50 + (Math.random() - 0.5) * 20;
+    const spokes = 8 + Math.floor(Math.random() * 4);
+    const rings = 5;
+
+    // Radial spokes
+    for (let i = 0; i < spokes; i++) {
+      const angle = (i / spokes) * Math.PI * 2;
+      const x2 = centerX + Math.cos(angle) * 100;
+      const y2 = centerY + Math.sin(angle) * 100;
+      lines.push({
+        x1: `${centerX}%`, y1: `${centerY}%`,
+        x2: `${x2}%`, y2: `${y2}%`,
+        color: Math.random() > 0.5 ? "#dc143c" : "#003cdc",
+        delay: Math.random() * 0.1
+      });
+
+      // Concentric rings
+      for (let r = 1; r <= rings; r++) {
+        const radius = r * (10 + Math.random() * 5);
+        const nextAngle = ((i + 1) / spokes) * Math.PI * 2;
+        
+        const rx1 = centerX + Math.cos(angle) * radius;
+        const ry1 = centerY + Math.sin(angle) * radius;
+        const rx2 = centerX + Math.cos(nextAngle) * radius;
+        const ry2 = centerY + Math.sin(nextAngle) * radius;
+
+        lines.push({
+          x1: `${rx1}%`, y1: `${ry1}%`,
+          x2: `${rx2}%`, y2: `${ry2}%`,
+          color: "rgba(255,255,255,0.4)", // Web is mostly white/silver
+          delay: 0.1 + (r * 0.05)
         });
       }
     }
-    setScratches(newLines);
+    setWebLines(lines);
   };
 
   const goTo = (idx: number, force = false) => {
     if (lockRef.current && !force) return;
     const clamped = Math.max(0, Math.min(SECTIONS.length - 1, idx));
     
-    generateScratches();
+    generateWeb();
     setScratching(true);
     soundManager.play('slash', 0.4);
-    setTimeout(() => setScratching(false), 450);
+    setTimeout(() => setScratching(false), 550);
 
     if (clamped === activeRef.current && !force) return;
     
@@ -125,27 +138,26 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* Dynamic Multiverse Scratch Effect */}
+      {/* Dynamic Procedural Spider Web Effect */}
       {scratching && (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.15, 0] }}
-            transition={{ duration: 0.45 }}
+            animate={{ opacity: [0, 0.2, 0] }}
+            transition={{ duration: 0.55 }}
             className="absolute inset-0 bg-gradient-to-br from-[#dc143c]/5 via-transparent to-[#003cdc]/5 mix-blend-overlay"
           />
           <svg width="100%" height="100%" className="absolute inset-0 overflow-visible">
             <g>
-              {scratches.map((l, i) => (
+              {webLines.map((l, i) => (
                 <motion.line
                   key={i}
                   x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
                   stroke={l.color}
-                  strokeWidth={l.w}
-                  strokeDasharray="1000"
-                  initial={{ strokeDashoffset: 1000, opacity: 0 }}
-                  animate={{ strokeDashoffset: 0, opacity: l.o }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  strokeWidth={1}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: l.delay, ease: "easeOut" }}
                 />
               ))}
             </g>
