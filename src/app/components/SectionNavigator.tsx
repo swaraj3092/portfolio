@@ -17,15 +17,42 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
   const lockRef = useRef(false);
   const activeRef = useRef(0);
 
+  const [scratchLines, setScratchLines] = useState<{ x1: string; y1: string; x2: string; y2: string; w: number }[]>([]);
+
+  const triggerScratch = () => {
+    const lines = [];
+    const count = 3 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+      const isHorizontal = Math.random() > 0.5;
+      if (isHorizontal) {
+        const y = Math.random() * 100;
+        lines.push({
+          x1: "-10%", y1: `${y - 5}%`,
+          x2: "110%", y2: `${y + 5}%`,
+          w: 1 + Math.random() * 3
+        });
+      } else {
+        const x = Math.random() * 100;
+        lines.push({
+          x1: `${x - 5}%`, y1: "-10%",
+          x2: `${x + 5}%`, y2: "110%",
+          w: 1 + Math.random() * 3
+        });
+      }
+    }
+    setScratchLines(lines);
+    setScratching(true);
+    soundManager.play('slash', 0.3);
+    setTimeout(() => setScratching(false), 400);
+  };
+
   const goTo = (idx: number, force = false) => {
     if (lockRef.current && !force) return;
     const clamped = Math.max(0, Math.min(SECTIONS.length - 1, idx));
     
-    setScratching(true);
-    soundManager.play('slash', 0.4);
-    setTimeout(() => setScratching(false), 450);
-
     if (clamped === activeRef.current && !force) return;
+
+    triggerScratch();
     
     lockRef.current = true;
     activeRef.current = clamped;
@@ -75,7 +102,11 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
     let lastActive = activeRef.current;
 
     const handleScroll = () => {
-      if (lockRef.current) return;
+      // Don't trigger if we are programmatically scrolling (goTo)
+      if (lockRef.current) {
+        lastActive = activeRef.current;
+        return;
+      }
 
       const scrollPos = window.scrollY + 120;
       const sections = SECTIONS.map(s => s.id);
@@ -84,10 +115,7 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
         const el = document.getElementById(sections[i]);
         if (el && scrollPos >= el.offsetTop) {
           if (i !== lastActive) {
-            // Section changed via manual scroll
-            setScratching(true);
-            soundManager.play('slash', 0.2);
-            setTimeout(() => setScratching(false), 450);
+            triggerScratch();
             lastActive = i;
           }
           activeRef.current = i;
@@ -105,32 +133,26 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* Simple Red Scratch Marks */}
+      {/* Dynamic Red Scratch Marks */}
       {scratching && (
         <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.6, 0] }}
-            transition={{ duration: 0.4 }}
+            animate={{ opacity: [0, 0.4, 0] }}
+            transition={{ duration: 0.3 }}
             className="absolute inset-0 bg-[#dc143c]/5"
           />
           <svg width="100%" height="100%" className="absolute inset-0 overflow-visible">
             <g>
-              {[
-                { x1: "10%", y1: "-10%", x2: "20%", y2: "110%", w: 2 },
-                { x1: "50%", y1: "-10%", x2: "45%", y2: "110%", w: 3 },
-                { x1: "90%", y1: "-10%", x2: "80%", y2: "110%", w: 1 },
-                { x1: "-10%", y1: "30%", x2: "110%", y2: "35%", w: 2 },
-                { x1: "-10%", y1: "70%", x2: "110%", y2: "75%", w: 1.5 },
-              ].map((l, i) => (
+              {scratchLines.map((l, i) => (
                 <motion.line
                   key={i}
                   x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
                   stroke="#dc143c"
                   strokeWidth={l.w}
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.7 }}
-                  transition={{ duration: 0.3 }}
+                  animate={{ pathLength: 1, opacity: 0.8 }}
+                  transition={{ duration: 0.2 }}
                 />
               ))}
             </g>
