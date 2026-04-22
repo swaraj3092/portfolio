@@ -82,7 +82,7 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
           }
         });
       },
-      { threshold: 0, rootMargin: '-10% 0px -85% 0px' }
+      { threshold: 0, rootMargin: '-80px 0px -75% 0px' }
     );
     SECTIONS.forEach((s) => {
       const el = document.getElementById(s.id);

@@ -33,7 +33,7 @@ export function Navigation({ minimalist, setMinimalist }: { minimalist: boolean;
 
     const observerOptions = {
       root: null,
-      rootMargin: '-10% 0px -85% 0px',
+      rootMargin: '-80px 0px -75% 0px',
       threshold: 0
     };
 
@@ -56,9 +56,18 @@ export function Navigation({ minimalist, setMinimalist }: { minimalist: boolean;
     };
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.getElementById(href.slice(1));
-    element?.scrollIntoView({ behavior: "smooth" });
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id.replace('#', ''));
+    if (el) {
+      const offset = 80;
+      const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
     setMobileMenuOpen(false);
   };
 
@@ -91,7 +100,7 @@ export function Navigation({ minimalist, setMinimalist }: { minimalist: boolean;
                     href={`#${id}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToSection(id);
                     }}
                     className={`relative px-4 py-2 text-xs tracking-[0.25em] uppercase transition-all duration-300 ${
                       activeSection === id ? 'text-[#dc143c]' : 'text-gray-400 hover:text-white'
