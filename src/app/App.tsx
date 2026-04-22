@@ -19,6 +19,7 @@ export default function App() {
   const [gameOpen, setGameOpen] = useState(false);
   const [calOpen, setCalOpen] = useState(false);
   const [minimalist, setMinimalist] = useState(false);
+  const [isMobileSim, setIsMobileSim] = useState(false);
 
   useEffect(() => {
     // Only auto-enable minimalist on mobile-sized screens
@@ -42,10 +43,21 @@ export default function App() {
     return () => window.removeEventListener("open-panel", onPanel);
   }, []);
 
-  // Strictly detect mobile phones with touch
-  const isMobileTouch = typeof window !== 'undefined' && 
+  // Strictly detect mobile phones with touch OR simulation mode
+  const isMobileTouch = (typeof window !== 'undefined' && 
     ('ontouchstart' in window || navigator.maxTouchPoints > 0) && 
-    window.innerWidth < 768;
+    window.innerWidth < 768) || isMobileSim;
+
+  // Keyboard shortcut for Mobile Sim (Alt + M)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === 'm') {
+        setIsMobileSim(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Swipe Gestures for Mobile
   useEffect(() => {
@@ -137,8 +149,42 @@ export default function App() {
       </div>
 
       {/* Panels */}
-      <GamePanel open={gameOpen} onClose={() => setGameOpen(false)} />
-      <CalendarPanel open={calOpen} onClose={() => setCalOpen(false)} />
+      <AnimatePresence mode="wait">
+        {gameOpen && (
+          <GamePanel 
+            key="game-panel"
+            open={gameOpen} 
+            onClose={() => setGameOpen(false)} 
+            isMobile={isMobileTouch}
+          />
+        )}
+        {calOpen && (
+          <CalendarPanel 
+            key="calendar-panel"
+            open={calOpen} 
+            onClose={() => setCalOpen(false)} 
+            isMobile={isMobileTouch}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Sim Toggle (Desktop Only) */}
+      {!('ontouchstart' in window) && (
+        <button
+          onClick={() => setIsMobileSim(!isMobileSim)}
+          className="fixed top-20 right-6 z-[100] px-3 py-1 text-[9px] tracking-widest uppercase transition-all duration-300"
+          style={{ 
+            background: isMobileSim ? '#dc143c' : 'rgba(220,20,60,0.1)',
+            border: '1px solid rgba(220,20,60,0.4)',
+            fontFamily: 'Orbitron, sans-serif',
+            color: isMobileSim ? '#fff' : '#dc143c',
+            clipPath: 'polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%)'
+          }}
+        >
+          {isMobileSim ? 'SIM_ACTIVE' : 'MOBILE_SIM'}
+        </button>
+      )}
+
       <Terminal />
     </>
   );

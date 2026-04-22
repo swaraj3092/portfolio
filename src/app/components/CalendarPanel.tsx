@@ -189,7 +189,7 @@ function EventModal({
 }
 
 // ── Main component ────────────────────────────────────────────
-export function CalendarPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function CalendarPanel({ open, onClose, isMobile }: { open: boolean; onClose: () => void; isMobile?: boolean }) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
@@ -507,10 +507,10 @@ export function CalendarPanel({ open, onClose }: { open: boolean; onClose: () =>
           <motion.div
             key="calendar"
             className="fixed inset-0 z-[80] flex overflow-hidden"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ x: '100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 32, stiffness: 210 }}
             style={{ background: '#060305' }}
           >
             <div className="absolute inset-0 pointer-events-none" style={{ border: '1px solid rgba(220,20,60,0.2)' }} />
@@ -743,6 +743,14 @@ export function CalendarPanel({ open, onClose }: { open: boolean; onClose: () =>
                   {/* Top bar */}
                   <div className="flex items-center justify-between px-4 py-4 lg:px-6 shrink-0" style={{ borderBottom: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.6)' }}>
                     <div className="flex items-center gap-2 lg:gap-4">
+                      {isMobile && (
+                        <button 
+                          onClick={onClose}
+                          className="mr-2 text-[#dc143c] flex items-center gap-1 font-bold text-[10px] tracking-widest hover:text-white transition-colors"
+                        >
+                          <ChevronLeft className="w-3 h-3" /> BACK
+                        </button>
+                      )}
                       <button onClick={prevMonth} className="p-1.5 lg:p-2 text-gray-600 hover:text-[#dc143c] transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><ChevronLeft className="w-4 h-4" /></button>
                       <motion.div key={`${year}-${month}`} className="text-center min-w-[80px]">
                         <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(0.8rem,1.5vw,1.2rem)', color: '#fff', letterSpacing: '0.1em' }}>{MONTHS[month].toUpperCase()}</div>

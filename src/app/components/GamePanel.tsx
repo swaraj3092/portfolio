@@ -161,7 +161,7 @@ function initStars(cx: number, cy: number, n = 120): Star[] {
 }
 
 // ── Component ──────────────────────────────────────────────────────────
-export function GamePanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function GamePanel({ open, onClose, isMobile }: { open: boolean; onClose: () => void; isMobile?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gsRef = useRef<GS | null>(null);
   const rafRef = useRef<number>(0);
@@ -633,10 +633,10 @@ export function GamePanel({ open, onClose }: { open: boolean; onClose: () => voi
         <motion.div
           key="game"
           className="fixed inset-0 z-[80]"
-          initial={{ x: '-100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '-100%' }}
-          transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+          initial={{ x: isMobile ? '100%' : '-100%', opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: isMobile ? '100%' : '-100%', opacity: 0 }}
+          transition={{ type: 'spring', damping: 30, stiffness: 200 }}
           style={{ background: '#060305', touchAction: 'none' }}
         >
           {/* Red border accent */}
@@ -659,6 +659,14 @@ export function GamePanel({ open, onClose }: { open: boolean; onClose: () => voi
             className="absolute top-4 right-4 z-10 flex items-center gap-2 px-4 py-2"
             style={{ border: '1px solid rgba(220,20,60,0.3)', background: 'rgba(6,3,5,0.8)', fontFamily: 'Orbitron, sans-serif', fontSize: '11px', color: '#dc143c', letterSpacing: '0.3em' }}
           >
+            {isMobile && (
+              <button 
+                onClick={onClose}
+                className="mr-4 pr-4 border-r border-[#dc143c]/30 text-[#dc143c] font-black flex items-center gap-2 hover:text-white transition-colors"
+              >
+                <ChevronLeft className="w-3 h-3" /> BACK_TO_PORTFOLIO
+              </button>
+            )}
             SYMBIOTE INVADERS
           </div>
 
