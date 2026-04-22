@@ -16,7 +16,7 @@ const projects = [
     metrics: ["Full-Stack Platform", "Gemini Pro", "Gamification"],
     icon: Zap,
     tag: "HACKATHON",
-    badge: "WINNER",
+
     github: "https://github.com/swaraj3092/EduPilot",
     demo: "https://edu-pilot-tau.vercel.app/",
   },
