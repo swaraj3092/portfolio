@@ -98,70 +98,36 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* The Symbiote Breach - High-Fidelity Cinematic Transition */}
+      {/* Optimized Symbiote Breach - High-Speed Performance Version */}
       {isBreaching && (
-        <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
-          {/* 1. Liquid Organic Wash */}
+        <div className="fixed inset-0 pointer-events-none z-[10000] overflow-hidden">
+          {/* Hardware-accelerated Flash */}
           <motion.div 
-            initial={{ scale: 0.8, opacity: 0, borderTopLeftRadius: "100%", borderBottomRightRadius: "100%" }}
-            animate={{ 
-              scale: [0.8, 1.2, 1.5], 
-              opacity: [0, 0.4, 0],
-              borderTopLeftRadius: ["100%", "20%", "0%"],
-              borderBottomRightRadius: ["100%", "40%", "0%"]
-            }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-0 bg-gradient-to-br from-[#dc143c]/20 via-black/40 to-[#003cdc]/20 backdrop-blur-[2px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.4, 0] }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="absolute inset-0 bg-[#dc143c]/10"
+            style={{ willChange: "opacity" }}
           />
 
-          {/* 2. Tactical Bio-Scanner Sweep */}
+          {/* Fast Scanline - Simplified */}
           <motion.div 
-            initial={{ y: "-100%" }}
-            animate={{ y: "200%" }}
-            transition={{ duration: 0.6, ease: "linear" }}
-            className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#dc143c] to-transparent shadow-[0_0_20px_#dc143c] z-20"
+            initial={{ y: "-10%" }}
+            animate={{ y: "110%" }}
+            transition={{ duration: 0.5, ease: "linear" }}
+            className="absolute left-0 right-0 h-1 bg-[#dc143c] shadow-[0_0_15px_#dc143c] z-20"
+            style={{ willChange: "transform" }}
           />
 
-          {/* 3. Chromatic Glitch Pulse */}
+          {/* Impact Glitch Pulse */}
           <motion.div 
             animate={{ 
-              x: [-4, 4, -2, 2, 0],
-              opacity: [0, 0.3, 0.1, 0.2, 0]
+              opacity: [0, 0.1, 0],
+              scale: [1, 1.05, 1]
             }}
-            transition={{ duration: 0.25 }}
-            className="absolute inset-0 bg-[#dc143c]/5 mix-blend-screen z-10"
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-white/5 mix-blend-overlay"
           />
-
-          {/* 4. Tactical Data Fragments */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: (i - 2.5) * 100, y: (Math.random() - 0.5) * 200 }}
-                animate={{ opacity: [0, 1, 0], scale: [0.8, 1.1, 1] }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="text-[10px] text-[#dc143c]/60 font-mono tracking-widest whitespace-nowrap"
-              >
-                {`0x${Math.random().toString(16).slice(2, 8).toUpperCase()}_BREACH_v1.0.4`}
-              </motion.div>
-            ))}
-          </div>
-
-          {/* 5. Liquid "Symbiote" Blobs */}
-          {[...Array(3)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ scale: 0, x: "50%", y: "50%", opacity: 0 }}
-              animate={{ 
-                scale: [0, 2.5, 4], 
-                x: [`${50 + (i-1)*10}%`, `${50 + (i-1)*20}%`],
-                y: [`${50 + (i-1)*5}%`, `${50 + (i-1)*15}%`],
-                opacity: [0, 0.35, 0] 
-              }}
-              transition={{ duration: 0.7, delay: i * 0.1, ease: "easeOut" }}
-              className="absolute w-64 h-64 rounded-full bg-black blur-3xl mix-blend-multiply"
-            />
-          ))}
         </div>
       )}
 
