@@ -48,9 +48,10 @@ export default function App() {
         style={{ scaleX: useScroll().scrollYProgress }}
       />
       <div
-        className="min-h-screen text-white overflow-x-hidden relative cursor-auto"
+        className={`min-h-screen text-white overflow-x-hidden relative ${minimalist ? 'cursor-auto' : 'cursor-none'}`}
         style={{ background: "transparent", maxWidth: "100vw" }}
       >
+        {!minimalist && <CursorEffect />}
         {!minimalist && <VenomBackground />}
         <Navigation minimalist={minimalist} setMinimalist={setMinimalist} />
         <SectionNavigator minimalist={minimalist} />
