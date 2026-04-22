@@ -28,32 +28,24 @@ export function Navigation({ minimalist, setMinimalist }: { minimalist: boolean;
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
 
-    const observerOptions = {
-      root: null,
-      rootMargin: '-80px 0px -75% 0px',
-      threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+      // Robust active section detection
+      const scrollPos = window.scrollY + 120; // 120px buffer for early highlighting
+      const sections = navItems.map(item => item.href.slice(1));
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && scrollPos >= el.offsetTop) {
+          setActiveSection(sections[i]);
+          break;
         }
-      });
-    }, observerOptions);
-
-    navItems.forEach((item) => {
-      const el = document.getElementById(item.href.slice(1));
-      if (el) observer.observe(el);
-    });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      observer.disconnect();
+      }
     };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (id: string) => {

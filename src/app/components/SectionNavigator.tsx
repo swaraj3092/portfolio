@@ -44,7 +44,7 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
       });
     }
 
-    setTimeout(() => { lockRef.current = false; }, 800);
+    setTimeout(() => { lockRef.current = false; }, 500);
   };
 
   // Keyboard: W/S/↑/↓ = nav | A/← = game | D/→ = calendar
@@ -73,22 +73,26 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   // Sync dots with scroll
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = SECTIONS.findIndex((s) => s.id === entry.target.id);
-            if (idx !== -1 && !lockRef.current) { activeRef.current = idx; setActive(idx); }
-          }
-        });
-      },
-      { threshold: 0, rootMargin: '-80px 0px -75% 0px' }
-    );
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      if (lockRef.current) return;
+
+      const scrollPos = window.scrollY + 120;
+      const sections = SECTIONS.map(s => s.id);
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && scrollPos >= el.offsetTop) {
+          activeRef.current = i;
+          setActive(i);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (

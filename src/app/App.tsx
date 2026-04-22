@@ -21,8 +21,10 @@ export default function App() {
   const [minimalist, setMinimalist] = useState(false);
 
   useEffect(() => {
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouch) setMinimalist(true);
+    // Only auto-enable minimalist on mobile-sized screens
+    if (window.innerWidth < 768) {
+      setMinimalist(true);
+    }
   }, []);
 
   useEffect(() => {
