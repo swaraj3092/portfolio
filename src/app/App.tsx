@@ -47,7 +47,46 @@ export default function App() {
     ('ontouchstart' in window || navigator.maxTouchPoints > 0) && 
     window.innerWidth < 768;
 
-  return (
+  // Swipe Gestures for Mobile
+  useEffect(() => {
+    if (!isMobileTouch) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      // Don't trigger if a panel is already open (avoid confusion)
+      if (gameOpen || calOpen) return;
+
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+      // Ensure horizontal swipe is dominant and above threshold (100px)
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 100) {
+        if (deltaX > 0) {
+          // Swipe Right -> Game
+          setGameOpen(true);
+          setCalOpen(false);
+        } else {
+          // Swipe Left -> Calendar
+          setCalOpen(true);
+          setGameOpen(false);
+        }
+      }
+    };
+
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [isMobileTouch, gameOpen, calOpen]);
     <>
       <Loader minimalist={minimalist} setMinimalist={setMinimalist} />
       <motion.div

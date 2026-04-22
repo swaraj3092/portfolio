@@ -782,18 +782,46 @@ export function GamePanel({ open, onClose }: { open: boolean; onClose: () => voi
             )}
           </AnimatePresence>
 
+          {/* Touch Controls Overlay for Mobile */}
+          <div className="absolute inset-0 z-5 md:hidden flex pointer-events-none">
+            <div 
+              className="w-1/4 h-full pointer-events-auto relative active:bg-white/5 transition-colors" 
+              onTouchStart={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.add('ArrowLeft'); }}
+              onTouchEnd={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.delete('ArrowLeft'); }}
+            >
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-20"><ChevronLeft className="w-8 h-8 text-[#dc143c]" /></div>
+            </div>
+            <div 
+              className="w-2/4 h-full pointer-events-auto relative active:bg-white/5 transition-colors" 
+              onTouchStart={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.add(' '); }}
+              onTouchEnd={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.delete(' '); }}
+            >
+              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-20"><Crosshair className="w-10 h-10 text-[#dc143c]" /></div>
+            </div>
+            <div 
+              className="w-1/4 h-full pointer-events-auto relative active:bg-white/5 transition-colors" 
+              onTouchStart={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.add('ArrowRight'); }}
+              onTouchEnd={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.delete('ArrowRight'); }}
+            >
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-20"><ChevronRight className="w-8 h-8 text-[#dc143c]" /></div>
+            </div>
+          </div>
+
           {/* Controls hint */}
           <div
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-5 text-[10px] tracking-widest uppercase pointer-events-none"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col md:flex-row items-center gap-2 md:gap-5 text-[10px] tracking-widest uppercase pointer-events-none text-center"
             style={{ fontFamily: 'Rajdhani, sans-serif', color: 'rgba(220,20,60,0.4)' }}
           >
-            <span>← → Move</span>
-            <span>|</span>
-            <span>Space Shoot</span>
-            <span>|</span>
-            <span>P Pause</span>
-            <span>|</span>
-            <span>ESC Exit</span>
+            <div className="md:hidden">TAP SIDES TO MOVE | CENTER TO FIRE</div>
+            <div className="hidden md:flex items-center gap-5">
+              <span>← → Move</span>
+              <span>|</span>
+              <span>Space Shoot</span>
+              <span>|</span>
+              <span>P Pause</span>
+              <span>|</span>
+              <span>ESC Exit</span>
+            </div>
           </div>
         </motion.div>
       )}

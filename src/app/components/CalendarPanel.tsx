@@ -507,16 +507,16 @@ export function CalendarPanel({ open, onClose }: { open: boolean; onClose: () =>
           <motion.div
             key="calendar"
             className="fixed inset-0 z-[80] flex overflow-hidden"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             style={{ background: '#060305' }}
           >
             <div className="absolute inset-0 pointer-events-none" style={{ border: '1px solid rgba(220,20,60,0.2)' }} />
 
-            {/* Sidebar */}
-            <div className="w-72 shrink-0 flex flex-col overflow-hidden" style={{ borderRight: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.95)' }}>
+            {/* Sidebar - Hidden on mobile, or toggleable */}
+            <div className="hidden lg:flex w-72 shrink-0 flex-col overflow-hidden" style={{ borderRight: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.95)' }}>
               {/* Tabs */}
               <div className="flex border-b border-[#dc143c]/20">
                 <button
@@ -730,164 +730,97 @@ export function CalendarPanel({ open, onClose }: { open: boolean; onClose: () =>
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
               {activeTab === 'resume' ? (
                 <>
-                  {/* Resume top bar */}
-                  <div className="flex items-center justify-between px-6 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.6)' }}>
-                    <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(1rem,2vw,1.4rem)', color: '#fff', letterSpacing: '0.1em' }}>RESUME</div>
+                  <div className="flex items-center justify-between px-4 py-4 lg:px-6 shrink-0" style={{ borderBottom: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.6)' }}>
+                    <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(0.9rem,2vw,1.4rem)', color: '#fff', letterSpacing: '0.1em' }}>RESUME</div>
                     <button onClick={onClose} className="p-2 text-gray-600 hover:text-white transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><X className="w-4 h-4" /></button>
                   </div>
-                  <ResumeView />
+                  <div className="flex-1 overflow-hidden">
+                    <ResumeView />
+                  </div>
                 </>
               ) : (
                 <>
                   {/* Top bar */}
-                  <div className="flex items-center justify-between px-6 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.6)' }}>
-                    <div className="flex items-center gap-4">
-                  <button onClick={prevMonth} className="p-2 text-gray-600 hover:text-[#dc143c] transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><ChevronLeft className="w-4 h-4" /></button>
-                  <motion.div key={`${year}-${month}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-                    <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(1rem,2vw,1.4rem)', color: '#fff', letterSpacing: '0.1em' }}>{MONTHS[month]}</div>
-                    <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '12px', color: '#dc143c', letterSpacing: '0.2em' }}>{year}</div>
-                  </motion.div>
-                  <button onClick={nextMonth} className="p-2 text-gray-600 hover:text-[#dc143c] transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><ChevronRight className="w-4 h-4" /></button>
-                  <button onClick={goToday} className="px-4 py-2 text-[10px] tracking-[0.2em] uppercase transition-all duration-200 text-[#dc143c]" style={{ border: '1px solid rgba(220,20,60,0.3)', fontFamily: 'Rajdhani, sans-serif' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(220,20,60,0.1)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                  >Today</button>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '11px', color: 'rgba(220,20,60,0.5)', letterSpacing: '0.15em' }}>
-                    {eventsThisMonth.length} EVENTS
-                  </div>
-                  <button onClick={onClose} className="p-2 text-gray-600 hover:text-white transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><X className="w-4 h-4" /></button>
-                </div>
-              </div>
-
-              {/* Day headers */}
-              <div className="grid grid-cols-7 shrink-0" style={{ borderBottom: '1px solid rgba(220,20,60,0.1)' }}>
-                {DAYS.map(d => (
-                  <div key={d} className="py-3 text-center" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '11px', letterSpacing: '0.2em', color: 'rgba(220,20,60,0.5)', borderRight: '1px solid rgba(220,20,60,0.06)' }}>
-                    {d.toUpperCase()}
-                  </div>
-                ))}
-              </div>
-
-              {/* Month grid */}
-              <div className="flex-1 overflow-y-auto">
-                <motion.div
-                  key={`${year}-${month}`}
-                  initial={{ opacity: 0, x: 20, filter: 'blur(10px)' }}
-                  animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="grid grid-cols-7 h-full"
-                  style={{ minHeight: `${Math.ceil(cells.length / 7) * 120}px` }}
-                >
-                  {cells.map((day, i) => {
-                    const ds = day ? `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}` : '';
-                    const dayEvents = ds ? eventsForDate(ds) : [];
-                    const isToday = ds === todayStr;
-                    const isSelected = ds === selectedDate;
-
-                    return (
-                      <div
-                        key={i}
-                        className="relative min-h-[120px] p-2 transition-all duration-200 cursor-pointer group"
-                        style={{
-                          borderRight: '1px solid rgba(220,20,60,0.06)',
-                          borderBottom: '1px solid rgba(220,20,60,0.06)',
-                          background: isSelected ? 'rgba(220,20,60,0.05)' : isToday ? 'rgba(220,20,60,0.04)' : 'transparent',
-                        }}
-                        onClick={() => {
-                          if (day) {
-                            setSelectedDate(ds === selectedDate ? null : ds);
-                          }
-                        }}
-                        onDoubleClick={() => {
-                          if (day) {
-                            setModal({ mode: 'add', initial: { date: ds } });
-                          }
-                        }}
-                        onMouseEnter={e => { if (day) (e.currentTarget as HTMLElement).style.background = 'rgba(220,20,60,0.04)'; }}
-                        onMouseLeave={e => { if (day) (e.currentTarget as HTMLElement).style.background = isSelected ? 'rgba(220,20,60,0.05)' : isToday ? 'rgba(220,20,60,0.04)' : 'transparent'; }}
+                  <div className="flex items-center justify-between px-4 py-4 lg:px-6 shrink-0" style={{ borderBottom: '1px solid rgba(220,20,60,0.15)', background: 'rgba(4,1,3,0.6)' }}>
+                    <div className="flex items-center gap-2 lg:gap-4">
+                      <button onClick={prevMonth} className="p-1.5 lg:p-2 text-gray-600 hover:text-[#dc143c] transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><ChevronLeft className="w-4 h-4" /></button>
+                      <motion.div key={`${year}-${month}`} className="text-center min-w-[80px]">
+                        <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(0.8rem,1.5vw,1.2rem)', color: '#fff', letterSpacing: '0.1em' }}>{MONTHS[month].toUpperCase()}</div>
+                      </motion.div>
+                      <button onClick={nextMonth} className="p-1.5 lg:p-2 text-gray-600 hover:text-[#dc143c] transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><ChevronRight className="w-4 h-4" /></button>
+                    </div>
+                    <div className="flex items-center gap-2 lg:gap-3">
+                      <button 
+                        onClick={() => setModal({ mode: 'add', initial: { date: toYMD(today) } })}
+                        className="lg:hidden p-2 text-[#dc143c]" style={{ border: '1px solid rgba(220,20,60,0.3)' }}
                       >
-                        {day && (
-                          <>
-                            {/* Day number */}
-                            <div className="flex items-center justify-between mb-1">
-                              <span
-                                className="w-8 h-8 flex items-center justify-center text-xs relative transition-all duration-300"
-                                style={{
-                                  fontFamily: 'Orbitron, sans-serif',
-                                  fontSize: '11px',
-                                  color: isToday ? '#fff' : day ? '#888' : '#333',
-                                  background: isToday ? '#dc143c' : 'transparent',
-                                  borderRadius: '2px',
-                                  boxShadow: isToday ? '0 0 15px rgba(220,20,60,0.5)' : isSelected ? 'inset 0 0 10px rgba(220,20,60,0.2)' : 'none',
-                                  border: isSelected ? '1px solid rgba(220,20,60,0.4)' : '1px solid transparent'
-                                }}
-                              >
-                                {day}
-                                {isToday && (
-                                  <motion.div 
-                                    className="absolute inset-0 rounded-sm border border-white/50"
-                                    animate={{ scale: [1, 1.4, 1], opacity: [1, 0, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                  />
-                                )}
-                              </span>
-                              {dayEvents.length > 0 && (
-                                <button
-                                  onClick={e => { e.stopPropagation(); setModal({ mode: 'add', initial: { date: ds } }); }}
-                                  className="opacity-0 group-hover:opacity-100 w-4 h-4 flex items-center justify-center transition-opacity duration-200 text-[#dc143c]"
-                                >
-                                  <Plus className="w-3 h-3" />
-                                </button>
-                              )}
-                            </div>
+                        <Plus className="w-4 h-4" />
+                      </button>
+                      <button onClick={onClose} className="p-2 text-gray-600 hover:text-white transition-colors duration-200" style={{ border: '1px solid rgba(220,20,60,0.15)' }}><X className="w-4 h-4" /></button>
+                    </div>
+                  </div>
 
-                            {/* Events */}
-                            <div className="space-y-0.5">
-                              {dayEvents.slice(0, 3).map(ev => (
-                                <motion.button
-                                  key={ev.id}
-                                  onClick={e => { e.stopPropagation(); setModal({ mode: 'edit', initial: ev }); }}
-                                  className="w-full text-left px-1.5 py-0.5 truncate transition-all duration-200"
-                                  style={{ background: CAT_CONFIG[ev.category].bg, borderLeft: `2px solid ${CAT_CONFIG[ev.category].color}`, fontSize: '10px', color: '#ccc', fontFamily: 'Rajdhani, sans-serif' }}
-                                  whileHover={{ x: 2 }}
-                                >
-                                  {ev.startTime} {ev.title}
-                                </motion.button>
-                              ))}
-                              {dayEvents.length > 3 && (
-                                <div style={{ fontSize: '9px', color: '#555', fontFamily: 'Rajdhani, sans-serif', paddingLeft: '2px' }}>
-                                  +{dayEvents.length - 3} more
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Add button on empty day hover */}
-                            {dayEvents.length === 0 && (
-                              <button
-                                onClick={e => { e.stopPropagation(); setModal({ mode: 'add', initial: { date: ds } }); }}
-                                className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-end justify-end p-2 transition-opacity duration-200"
-                              >
-                                <div className="w-5 h-5 flex items-center justify-center" style={{ background: 'rgba(220,20,60,0.15)', border: '1px solid rgba(220,20,60,0.3)' }}>
-                                  <Plus className="w-3 h-3 text-[#dc143c]" />
-                                </div>
-                              </button>
-                            )}
-                          </>
-                        )}
+                  {/* Mobile Schedule List View / Desktop Grid */}
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div className="lg:hidden p-4 space-y-4">
+                      {/* Mobile Day Headers */}
+                      <div className="text-[10px] tracking-[0.3em] text-[#dc143c] font-black mb-6 flex items-center gap-2">
+                        <div className="w-2 h-2 bg-[#dc143c] rotate-45" /> UPCOMING_EVENTS
                       </div>
-                    );
-                  })}
-                </motion.div>
-              </div>
+                      {eventsThisMonth.length > 0 ? (
+                        eventsThisMonth.map(ev => (
+                          <motion.div 
+                            key={ev.id}
+                            className="p-4 relative"
+                            style={{ 
+                              background: 'rgba(220,20,60,0.03)', 
+                              border: '1px solid rgba(220,20,60,0.15)',
+                              clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)'
+                            }}
+                            onClick={() => setModal({ mode: 'edit', initial: ev })}
+                          >
+                            <div className="flex justify-between items-start">
+                              <span className="text-[10px] font-bold text-[#dc143c] tracking-widest" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                {ev.date.split('-').reverse().slice(0,2).join('/')}
+                              </span>
+                              <div className="w-1.5 h-1.5 rounded-full" style={{ background: CAT_CONFIG[ev.category].color }} />
+                            </div>
+                            <h3 className="text-white font-bold mt-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '16px' }}>{ev.title}</h3>
+                            <div className="text-gray-400 text-xs mt-1" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{ev.startTime} - {ev.endTime}</div>
+                          </motion.div>
+                        ))
+                      ) : (
+                        <div className="py-20 text-center text-gray-600 text-xs tracking-widest uppercase">No events this month</div>
+                      )}
+                    </div>
 
-              {/* Controls hint */}
-              <div className="px-6 py-2 text-[9px] tracking-widest uppercase flex gap-6" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'rgba(220,20,60,0.6)', borderTop: '1px solid rgba(220,20,60,0.12)' }}>
-                <span>← → Navigate Months</span>
-                <span>Double-click Add Event</span>
-                <span>ESC Close</span>
-              </div>
+                    {/* Desktop Grid (Hidden on Mobile) */}
+                    <div className="hidden lg:block h-full">
+                      <div className="grid grid-cols-7 border-b border-[#dc143c]/10">
+                        {DAYS.map(d => <div key={d} className="py-2 text-center text-[10px] tracking-widest text-gray-600">{d.toUpperCase()}</div>)}
+                      </div>
+                      <div className="grid grid-cols-7">
+                        {cells.map((day, i) => {
+                          const ds = day ? `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}` : '';
+                          const dayEvents = ds ? eventsForDate(ds) : [];
+                          return (
+                            <div key={i} className="min-h-[140px] p-2 border-r border-b border-[#dc143c]/5 group hover:bg-[#dc143c]/5 transition-all">
+                              {day && (
+                                <>
+                                  <span className="text-[10px] font-bold text-gray-600 group-hover:text-[#dc143c]">{day}</span>
+                                  <div className="mt-2 space-y-1">
+                                    {dayEvents.map(ev => (
+                                      <div key={ev.id} className="text-[9px] p-1 truncate text-white" style={{ background: CAT_CONFIG[ev.category].bg }}>{ev.title}</div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
             </div>

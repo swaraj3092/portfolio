@@ -373,38 +373,7 @@ export function Hero({ minimalist, setMinimalist }: { minimalist: boolean; setMi
             </Magnetic>
           </div>
 
-          {/* Top-Right HUD Cinematic Toggle */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-            className="fixed top-24 right-6 z-[100] hidden md:block"
-          >
-            <button
-              onClick={() => setMinimalist(!minimalist)}
-              className="group flex flex-col items-end gap-2 p-4 transition-all duration-300"
-              style={{
-                background: 'rgba(220,20,60,0.08)',
-                border: '1px solid rgba(220,20,60,0.25)',
-                backdropFilter: 'blur(12px)',
-                clipPath: 'polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(220,20,60,0.15)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(220,20,60,0.08)'; }}
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] tracking-[0.2em] text-[#dc143c] font-black" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  {minimalist ? 'MINIMALIST' : 'CINEMATIC'}
-                </span>
-                <div className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${!minimalist ? 'bg-[#dc143c] shadow-[0_0_12px_#dc143c]' : 'bg-gray-600'}`} />
-              </div>
-              <span className="text-[8px] tracking-[0.3em] text-gray-500 uppercase font-bold" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
-                System_Visuals.cfg
-              </span>
-            </button>
-          </motion.div>
-
-          {/* Mobile version of toggle (inline) */}
+          {/* Mobile version of toggle (inline) - Desktop uses Navigation toggle */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
