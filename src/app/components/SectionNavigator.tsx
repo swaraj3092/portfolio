@@ -16,12 +16,40 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
   const [scratching, setScratching] = useState(false);
   const lockRef = useRef(false);
   const activeRef = useRef(0);
+  const [scratches, setScratches] = useState<{ x1: string; y1: string; x2: string; y2: string; w: number; o: number; color: string }[]>([]);
+
+  const generateScratches = () => {
+    const newLines = [];
+    const count = 8 + Math.floor(Math.random() * 6);
+    for (let i = 0; i < count; i++) {
+      const isHorizontal = Math.random() > 0.5;
+      const color = Math.random() > 0.4 ? "#dc143c" : "#003cdc"; 
+      if (isHorizontal) {
+        newLines.push({
+          x1: "-10%", y1: `${Math.random() * 110}%`,
+          x2: "110%", y2: `${Math.random() * 110}%`,
+          w: 0.5 + Math.random() * 1.5,
+          o: 0.3 + Math.random() * 0.6,
+          color
+        });
+      } else {
+        newLines.push({
+          x1: `${Math.random() * 110}%`, y1: "-10%",
+          x2: `${Math.random() * 110}%`, y2: "110%",
+          w: 0.5 + Math.random() * 1.5,
+          o: 0.3 + Math.random() * 0.6,
+          color
+        });
+      }
+    }
+    setScratches(newLines);
+  };
 
   const goTo = (idx: number, force = false) => {
     if (lockRef.current && !force) return;
     const clamped = Math.max(0, Math.min(SECTIONS.length - 1, idx));
     
-    // Always trigger effect on manual call even if same section
+    generateScratches();
     setScratching(true);
     soundManager.play('slash', 0.4);
     setTimeout(() => setScratching(false), 450);
@@ -34,7 +62,7 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
     const el = document.getElementById(SECTIONS[clamped].id);
     if (el) {
-      const offset = 80; // offset for nav
+      const offset = 80;
       const elementPosition = el.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -97,51 +125,31 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* Spider Web Scratch Effect - Now unconditionally active for impact */}
+      {/* Dynamic Multiverse Scratch Effect */}
       {scratching && (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0] }}
+            animate={{ opacity: [0, 0.15, 0] }}
             transition={{ duration: 0.45 }}
-            className="absolute inset-0 bg-[#dc143c]/10 mix-blend-overlay"
+            className="absolute inset-0 bg-gradient-to-br from-[#dc143c]/5 via-transparent to-[#003cdc]/5 mix-blend-overlay"
           />
           <svg width="100%" height="100%" className="absolute inset-0 overflow-visible">
-            <defs>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-            <g filter="url(#glow)">
-              {[
-                { x1: "10%", y1: "-10%", x2: "20%", y2: "110%", w: 3, o: 0.9 },
-                { x1: "30%", y1: "-10%", x2: "25%", y2: "110%", w: 1.5, o: 0.6 },
-                { x1: "50%", y1: "-10%", x2: "45%", y2: "110%", w: 4, o: 0.8 },
-                { x1: "70%", y1: "-10%", x2: "85%", y2: "110%", w: 2, o: 0.7 },
-                { x1: "90%", y1: "-10%", x2: "80%", y2: "110%", w: 1, o: 0.4 },
-                { x1: "-10%", y1: "20%", x2: "110%", y2: "25%", w: 2.5, o: 0.8 },
-                { x1: "-10%", y1: "50%", x2: "110%", y2: "45%", w: 3.5, o: 0.75 },
-                { x1: "-10%", y1: "80%", x2: "110%", y2: "90%", w: 1.5, o: 0.5 },
-                { x1: "0%", y1: "10%", x2: "100%", y2: "90%", w: 1, o: 0.6 },
-                { x1: "100%", y1: "10%", x2: "0%", y2: "90%", w: 1, o: 0.6 },
-              ].map((l, i) => (
+            <g>
+              {scratches.map((l, i) => (
                 <motion.line
                   key={i}
                   x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                  stroke="#dc143c"
+                  stroke={l.color}
                   strokeWidth={l.w}
                   strokeDasharray="1000"
                   initial={{ strokeDashoffset: 1000, opacity: 0 }}
                   animate={{ strokeDashoffset: 0, opacity: l.o }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
                 />
               ))}
             </g>
           </svg>
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#dc143c]/5 to-transparent animate-pulse" />
         </div>
       )}
 
