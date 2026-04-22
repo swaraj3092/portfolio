@@ -106,107 +106,61 @@ export function Hero({ minimalist, setMinimalist }: { minimalist: boolean; setMi
       <div className="container mx-auto px-6 z-10 relative pt-12">
         <div className="flex flex-col items-center text-center max-w-6xl mx-auto mt-8 mb-20">
 
-          {/* Vertical status badge on the left */}
+          {/* Cinematic Status HUD (Horizontal) */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="fixed left-6 top-1/2 -translate-y-1/2 z-[50] hidden lg:flex flex-col items-center gap-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="w-full flex flex-col md:flex-row items-center justify-center gap-4 mb-16 relative"
           >
-            <div className="w-px h-24 bg-gradient-to-b from-transparent via-[#dc143c] to-transparent opacity-40" />
+            {/* Status Indicator */}
             <div 
-              className="flex flex-col items-center gap-5 py-10 px-3"
+              className="flex items-center gap-4 px-6 py-2.5"
               style={{ 
-                border: '1px solid rgba(220,20,60,0.3)',
-                background: 'rgba(220,20,60,0.05)',
-                backdropFilter: 'blur(12px)',
-                boxShadow: '0 0 30px rgba(220,20,60,0.15)',
+                border: '1px solid rgba(220,20,60,0.35)',
+                background: 'linear-gradient(90deg, rgba(220,20,60,0.08), transparent)',
+                backdropFilter: 'blur(10px)',
+                clipPath: 'polygon(0 0, 100% 0, 100% 70%, 95% 100%, 0 100%)'
               }}
             >
               <motion.div 
-                animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="w-2.5 h-2.5 rounded-full bg-[#dc143c] mb-2 shadow-[0_0_12px_#dc143c]" 
+                className="w-2 h-2 rounded-full bg-[#dc143c] shadow-[0_0_12px_#dc143c]" 
               />
-              
-              {/* Stacked "OPEN" */}
-              <div 
-                className="flex flex-col items-center gap-3 text-[#dc143c] font-black"
-                style={{ 
-                  fontFamily: 'Orbitron, sans-serif', 
-                  fontSize: '16px',
-                  textShadow: '0 0 10px rgba(220,20,60,0.8)'
-                }}
+              <span 
+                className="text-[#dc143c] tracking-[0.4em] font-black uppercase text-[10px]"
+                style={{ fontFamily: 'Orbitron, sans-serif' }}
               >
-                {['O', 'P', 'E', 'N'].map((char, i) => <span key={i}>{char}</span>)}
-              </div>
-
-              {/* Decorative separator */}
-              <div className="h-12 w-px bg-gradient-to-b from-transparent via-[#dc143c] to-transparent opacity-50 my-2" />
-
-              {/* Vertical "FOR OPPORTUNITIES" */}
-              <div 
-                className="text-[#dc143c] tracking-[0.6em] font-bold uppercase opacity-80"
-                style={{ 
-                  fontFamily: 'Rajdhani, sans-serif', 
-                  fontSize: '9px',
-                  writingMode: 'vertical-rl',
-                  textShadow: '0 0 5px rgba(220,20,60,0.4)'
-                }}
-              >
-                FOR OPPORTUNITIES
-              </div>
-
-              {/* Dynamic Score HUD */}
-              {highScore > 0 && (
-                <>
-                  <div className="h-8 w-px bg-[#dc143c]/20 my-2" />
-                  <div className="flex flex-col items-center gap-1">
-                    <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '8px', color: '#dc143c', opacity: 0.6 }}>SCORE</span>
-                    <div 
-                      className="text-white font-bold text-[10px]"
-                      style={{ 
-                        fontFamily: 'Orbitron, sans-serif',
-                        writingMode: 'vertical-rl',
-                        letterSpacing: '0.1em'
-                      }}
-                    >
-                      {highScore.toString().padStart(5, '0')}
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="flex flex-col gap-1.5 mt-2 opacity-50">
-                <div className="w-1 h-1 bg-[#dc143c] rounded-full" />
-                <div className="w-1 h-1 bg-[#dc143c] rounded-full" />
-              </div>
-            </div>
-            <div className="w-px h-24 bg-gradient-to-b from-transparent via-[#dc143c] to-transparent opacity-40" />
-          </motion.div>
-
-          {/* Mobile version of status badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mb-8 lg:hidden"
-          >
-            <div
-              className="inline-flex items-center gap-3 px-5 py-2"
-              style={{
-                border: '1px solid rgba(220,20,60,0.35)',
-                background: 'rgba(220,20,60,0.04)',
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#dc143c] animate-pulse" />
-              <span
-                className="text-[#dc143c] tracking-[0.45em] uppercase"
-                style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '11px' }}
-              >
-                <RevealText text="Open to Opportunities" />
+                OPEN_FOR_OPPORTUNITIES
               </span>
             </div>
+
+            {/* High Score Sync */}
+            {highScore > 0 && (
+              <div 
+                className="flex items-center gap-4 px-6 py-2.5"
+                style={{ 
+                  border: '1px solid rgba(220,20,60,0.2)',
+                  background: 'rgba(6,3,5,0.4)',
+                  backdropFilter: 'blur(10px)',
+                  clipPath: 'polygon(5% 0, 100% 0, 100% 100%, 0 100%, 0 30%)'
+                }}
+              >
+                <span 
+                  className="text-[#dc143c]/60 tracking-[0.3em] font-bold uppercase text-[9px]"
+                  style={{ fontFamily: 'Orbitron, sans-serif' }}
+                >
+                  LEGACY_SCORE
+                </span>
+                <span 
+                  className="text-white font-black tracking-[0.1em] text-[12px]"
+                  style={{ fontFamily: 'Orbitron, sans-serif' }}
+                >
+                  {highScore.toString().padStart(6, '0')}
+                </span>
+              </div>
+            )}
           </motion.div>
 
           <motion.div
