@@ -102,7 +102,7 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
     let lastActive = activeRef.current;
 
     const handleScroll = () => {
-      // Don't trigger if we are programmatically scrolling (goTo)
+      // Manual scroll ONLY updates the active dot, NO SCRATCHES
       if (lockRef.current) {
         lastActive = activeRef.current;
         return;
@@ -114,12 +114,9 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el && scrollPos >= el.offsetTop) {
-          if (i !== lastActive) {
-            triggerScratch();
-            lastActive = i;
-          }
           activeRef.current = i;
           setActive(i);
+          lastActive = i;
           break;
         }
       }
