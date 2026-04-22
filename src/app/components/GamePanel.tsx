@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, RotateCcw, Trophy } from 'lucide-react';
+import { X, RotateCcw, Trophy, ChevronLeft, ChevronRight, Crosshair } from 'lucide-react';
 
 // ── Types ──────────────────────────────────────────────────────────────
 interface Inv { row: number; col: number; alive: boolean; type: number; flash: number; }
@@ -637,7 +637,7 @@ export function GamePanel({ open, onClose }: { open: boolean; onClose: () => voi
           animate={{ x: 0 }}
           exit={{ x: '-100%' }}
           transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-          style={{ background: '#060305' }}
+          style={{ background: '#060305', touchAction: 'none' }}
         >
           {/* Red border accent */}
           <div className="absolute inset-0 pointer-events-none" style={{ border: '1px solid rgba(220,20,60,0.25)', zIndex: 2 }} />
@@ -786,22 +786,22 @@ export function GamePanel({ open, onClose }: { open: boolean; onClose: () => voi
           <div className="absolute inset-0 z-5 md:hidden flex pointer-events-none">
             <div 
               className="w-1/4 h-full pointer-events-auto relative active:bg-white/5 transition-colors" 
-              onTouchStart={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.add('ArrowLeft'); }}
-              onTouchEnd={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.delete('ArrowLeft'); }}
+              onTouchStart={() => { if(gsRef.current) gsRef.current.keys.add('ArrowLeft'); }}
+              onTouchEnd={() => { if(gsRef.current) gsRef.current.keys.delete('ArrowLeft'); }}
             >
               <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-20"><ChevronLeft className="w-8 h-8 text-[#dc143c]" /></div>
             </div>
             <div 
               className="w-2/4 h-full pointer-events-auto relative active:bg-white/5 transition-colors" 
-              onTouchStart={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.add(' '); }}
-              onTouchEnd={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.delete(' '); }}
+              onTouchStart={() => { if(gsRef.current) gsRef.current.keys.add(' '); }}
+              onTouchEnd={() => { if(gsRef.current) gsRef.current.keys.delete(' '); }}
             >
               <div className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-20"><Crosshair className="w-10 h-10 text-[#dc143c]" /></div>
             </div>
             <div 
               className="w-1/4 h-full pointer-events-auto relative active:bg-white/5 transition-colors" 
-              onTouchStart={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.add('ArrowRight'); }}
-              onTouchEnd={(e) => { e.preventDefault(); if(gsRef.current) gsRef.current.keys.delete('ArrowRight'); }}
+              onTouchStart={() => { if(gsRef.current) gsRef.current.keys.add('ArrowRight'); }}
+              onTouchEnd={() => { if(gsRef.current) gsRef.current.keys.delete('ArrowRight'); }}
             >
               <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-20"><ChevronRight className="w-8 h-8 text-[#dc143c]" /></div>
             </div>
