@@ -28,22 +28,32 @@ export function Navigation({ minimalist, setMinimalist }: { minimalist: boolean;
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
 
-      const sections = navItems.map(item => item.href.slice(1));
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
+    const observerOptions = {
+      root: null,
+      rootMargin: '-10% 0px -85% 0px',
+      threshold: 0
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, observerOptions);
+
+    navItems.forEach((item) => {
+      const el = document.getElementById(item.href.slice(1));
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   const scrollToSection = (href: string) => {

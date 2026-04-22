@@ -78,11 +78,11 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const idx = SECTIONS.findIndex((s) => s.id === entry.target.id);
-            if (idx !== -1) { activeRef.current = idx; setActive(idx); }
+            if (idx !== -1 && !lockRef.current) { activeRef.current = idx; setActive(idx); }
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0, rootMargin: '-10% 0px -85% 0px' }
     );
     SECTIONS.forEach((s) => {
       const el = document.getElementById(s.id);
