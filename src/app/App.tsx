@@ -42,18 +42,20 @@ export default function App() {
     return () => window.removeEventListener("open-panel", onPanel);
   }, []);
 
+  const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
   return (
     <>
-      <Loader />
+      <Loader minimalist={minimalist} setMinimalist={setMinimalist} />
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-[#dc143c] z-[100] origin-left"
         style={{ scaleX: useScroll().scrollYProgress }}
       />
       <div
-        className={`min-h-screen text-white overflow-x-hidden relative ${minimalist ? 'cursor-auto' : 'cursor-none'}`}
+        className={`min-h-screen text-white overflow-x-hidden relative ${(minimalist || isTouch) ? 'cursor-auto' : 'cursor-none'}`}
         style={{ background: "transparent", maxWidth: "100vw" }}
       >
-        {!minimalist && <CursorEffect />}
+        {!minimalist && !isTouch && <CursorEffect />}
         {!minimalist && <VenomBackground />}
         <Navigation minimalist={minimalist} setMinimalist={setMinimalist} />
         <SectionNavigator minimalist={minimalist} />

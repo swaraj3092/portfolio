@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
-export function Loader() {
+export function Loader({ minimalist, setMinimalist }: { minimalist: boolean; setMinimalist: (val: boolean) => void }) {
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState('initializing'); // initializing, breaching, complete
 
@@ -136,6 +136,27 @@ export function Loader() {
                   <span className="text-gray-500">{progress}%</span>
                   <span className="text-[#dc143c]">Breaching_Multiverse</span>
                 </div>
+
+                {/* Effect Toggle on Entrance */}
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  onClick={() => setMinimalist(!minimalist)}
+                  className="mt-12 group pointer-events-auto flex items-center gap-4 px-6 py-3"
+                  style={{ 
+                    border: '1px solid rgba(220,20,60,0.3)',
+                    background: 'rgba(220,20,60,0.05)',
+                    backdropFilter: 'blur(8px)'
+                  }}
+                >
+                  <div 
+                    className={`w-3 h-3 rounded-full transition-all duration-500 ${!minimalist ? 'bg-[#dc143c] shadow-[0_0_12px_#dc143c]' : 'bg-gray-600'}`} 
+                  />
+                  <span className="text-[10px] tracking-[0.3em] uppercase text-white font-bold" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                    {minimalist ? 'ENABLE CINEMATIC EFFECTS' : 'EFFECTS ACTIVE'}
+                  </span>
+                </motion.button>
               </motion.div>
             )}
           </AnimatePresence>
