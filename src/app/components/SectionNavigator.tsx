@@ -16,45 +16,64 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
   const [scratching, setScratching] = useState(false);
   const lockRef = useRef(false);
   const activeRef = useRef(0);
-  const [webLines, setWebLines] = useState<{ x1: string; y1: string; x2: string; y2: string; color: string; delay: number }[]>([]);
+  const [webLines, setWebLines] = useState<{ x1: string; y1: string; x2: string; y2: string; w: number; o: number; delay: number }[]>([]);
 
   const generateWeb = () => {
     const lines = [];
-    const centerX = 50 + (Math.random() - 0.5) * 20; // Random center near middle
-    const centerY = 50 + (Math.random() - 0.5) * 20;
-    const spokes = 8 + Math.floor(Math.random() * 4);
-    const rings = 5;
+    const origins = [
+      { x: -5, y: -5 },   // Top Left
+      { x: 105, y: -5 },  // Top Right
+      { x: -5, y: 105 },  // Bottom Left
+      { x: 105, y: 105 }, // Bottom Right
+    ];
 
-    // Radial spokes
-    for (let i = 0; i < spokes; i++) {
-      const angle = (i / spokes) * Math.PI * 2;
-      const x2 = centerX + Math.cos(angle) * 100;
-      const y2 = centerY + Math.sin(angle) * 100;
+    // Select 2-3 random origins for variety
+    const activeOrigins = origins.sort(() => 0.5 - Math.random()).slice(0, 2 + Math.floor(Math.random() * 2));
+
+    activeOrigins.forEach((origin) => {
+      // Main impact point for this web
+      const targetX = 30 + Math.random() * 40;
+      const targetY = 30 + Math.random() * 40;
+
+      // 1. Main Impact Strand
       lines.push({
-        x1: `${centerX}%`, y1: `${centerY}%`,
-        x2: `${x2}%`, y2: `${y2}%`,
-        color: Math.random() > 0.5 ? "#dc143c" : "#003cdc",
-        delay: Math.random() * 0.1
+        x1: `${origin.x}%`, y1: `${origin.y}%`,
+        x2: `${targetX}%`, y2: `${targetY}%`,
+        w: 1.5, o: 0.8,
+        delay: Math.random() * 0.05
       });
 
-      // Concentric rings
-      for (let r = 1; r <= rings; r++) {
-        const radius = r * (10 + Math.random() * 5);
-        const nextAngle = ((i + 1) / spokes) * Math.PI * 2;
-        
-        const rx1 = centerX + Math.cos(angle) * radius;
-        const ry1 = centerY + Math.sin(angle) * radius;
-        const rx2 = centerX + Math.cos(nextAngle) * radius;
-        const ry2 = centerY + Math.sin(nextAngle) * radius;
+      // 2. Branching "Threads" at the impact site
+      const branches = 6 + Math.floor(Math.random() * 6);
+      for (let i = 0; i < branches; i++) {
+        const length = 5 + Math.random() * 15;
+        const angle = Math.random() * Math.PI * 2;
+        const bx2 = targetX + Math.cos(angle) * length;
+        const by2 = targetY + Math.sin(angle) * length;
 
         lines.push({
-          x1: `${rx1}%`, y1: `${ry1}%`,
-          x2: `${rx2}%`, y2: `${ry2}%`,
-          color: "rgba(255,255,255,0.4)", // Web is mostly white/silver
-          delay: 0.1 + (r * 0.05)
+          x1: `${targetX}%`, y1: `${targetY}%`,
+          x2: `${bx2}%`, y2: `${by2}%`,
+          w: 0.5 + Math.random() * 0.5,
+          o: 0.4 + Math.random() * 0.4,
+          delay: 0.05 + Math.random() * 0.1
         });
+
+        // Sub-branches for realism
+        if (Math.random() > 0.6) {
+          const sLength = 3 + Math.random() * 7;
+          const sAngle = angle + (Math.random() - 0.5) * 1;
+          lines.push({
+            x1: `${bx2}%`, y1: `${by2}%`,
+            x2: `${bx2 + Math.cos(sAngle) * sLength}%`, 
+            y2: `${by2 + Math.sin(sAngle) * sLength}%`,
+            w: 0.3, o: 0.3,
+            delay: 0.12 + Math.random() * 0.08
+          });
+        }
       }
-    }
+    });
+
     setWebLines(lines);
   };
 
@@ -65,7 +84,7 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
     generateWeb();
     setScratching(true);
     soundManager.play('slash', 0.4);
-    setTimeout(() => setScratching(false), 550);
+    setTimeout(() => setScratching(false), 650);
 
     if (clamped === activeRef.current && !force) return;
     
@@ -138,14 +157,14 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* Dynamic Procedural Spider Web Effect */}
+      {/* Impact Spider Web Effect */}
       {scratching && (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.2, 0] }}
-            transition={{ duration: 0.55 }}
-            className="absolute inset-0 bg-gradient-to-br from-[#dc143c]/5 via-transparent to-[#003cdc]/5 mix-blend-overlay"
+            animate={{ opacity: [0, 0.25, 0] }}
+            transition={{ duration: 0.65 }}
+            className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 mix-blend-overlay"
           />
           <svg width="100%" height="100%" className="absolute inset-0 overflow-visible">
             <g>
@@ -153,11 +172,22 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
                 <motion.line
                   key={i}
                   x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                  stroke={l.color}
-                  strokeWidth={1}
+                  stroke="#ffffff"
+                  strokeWidth={l.w}
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 0.3, delay: l.delay, ease: "easeOut" }}
+                  animate={{ 
+                    pathLength: 1, 
+                    opacity: [0, l.o, l.o, 0],
+                    x: [0, (Math.random() - 0.5) * 2, 0], // Subtle impact jitter
+                    y: [0, (Math.random() - 0.5) * 2, 0]
+                  }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: l.delay, 
+                    ease: "easeOut",
+                    opacity: { times: [0, 0.1, 0.8, 1], duration: 0.6 }
+                  }}
+                  style={{ filter: "drop-shadow(0 0 2px rgba(255,255,255,0.5))" }}
                 />
               ))}
             </g>
