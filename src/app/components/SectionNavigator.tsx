@@ -16,16 +16,14 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
   const [scratching, setScratching] = useState(false);
   const lockRef = useRef(false);
   const activeRef = useRef(0);
-  const [isBreaching, setIsBreaching] = useState(false);
 
   const goTo = (idx: number, force = false) => {
     if (lockRef.current && !force) return;
     const clamped = Math.max(0, Math.min(SECTIONS.length - 1, idx));
     
-    // Trigger Symbiote Breach effect
-    setIsBreaching(true);
-    soundManager.play('slash', 0.35);
-    setTimeout(() => setIsBreaching(false), 800);
+    setScratching(true);
+    soundManager.play('slash', 0.4);
+    setTimeout(() => setScratching(false), 450);
 
     if (clamped === activeRef.current && !force) return;
     
@@ -87,9 +85,9 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
         if (el && scrollPos >= el.offsetTop) {
           if (i !== lastActive) {
             // Section changed via manual scroll
-            setIsBreaching(true);
+            setScratching(true);
             soundManager.play('slash', 0.2);
-            setTimeout(() => setIsBreaching(false), 600);
+            setTimeout(() => setScratching(false), 450);
             lastActive = i;
           }
           activeRef.current = i;
@@ -107,32 +105,36 @@ export function SectionNavigator({ minimalist }: { minimalist: boolean }) {
 
   return (
     <>
-      {/* High-Visibility Symbiote Breach */}
-      {isBreaching && (
-        <div className="fixed inset-0 pointer-events-none z-[99999] overflow-hidden">
-          {/* Main Dark Wash - Guaranteed Visibility */}
+      {/* Simple Red Scratch Marks */}
+      {scratching && (
+        <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 0.3, times: [0, 0.4, 1] }}
-            className="absolute inset-0 bg-black z-10"
-          />
-
-          {/* Crimson Energy Burst */}
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: [0.8, 1.1], opacity: [0, 0.5, 0] }}
+            animate={{ opacity: [0, 0.6, 0] }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0 bg-gradient-to-t from-[#dc143c] via-transparent to-[#dc143c] mix-blend-screen z-20"
+            className="absolute inset-0 bg-[#dc143c]/5"
           />
-
-          {/* Tactical Bio-Scanner */}
-          <motion.div 
-            initial={{ x: "-100%" }}
-            animate={{ x: "100%" }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="absolute top-0 bottom-0 w-1 bg-[#dc143c] shadow-[0_0_30px_#dc143c] z-30"
-          />
+          <svg width="100%" height="100%" className="absolute inset-0 overflow-visible">
+            <g>
+              {[
+                { x1: "10%", y1: "-10%", x2: "20%", y2: "110%", w: 2 },
+                { x1: "50%", y1: "-10%", x2: "45%", y2: "110%", w: 3 },
+                { x1: "90%", y1: "-10%", x2: "80%", y2: "110%", w: 1 },
+                { x1: "-10%", y1: "30%", x2: "110%", y2: "35%", w: 2 },
+                { x1: "-10%", y1: "70%", x2: "110%", y2: "75%", w: 1.5 },
+              ].map((l, i) => (
+                <motion.line
+                  key={i}
+                  x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+                  stroke="#dc143c"
+                  strokeWidth={l.w}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.7 }}
+                  transition={{ duration: 0.3 }}
+                />
+              ))}
+            </g>
+          </svg>
         </div>
       )}
 
