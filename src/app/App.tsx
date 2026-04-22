@@ -42,7 +42,10 @@ export default function App() {
     return () => window.removeEventListener("open-panel", onPanel);
   }, []);
 
-  const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  // Strictly detect mobile phones with touch
+  const isMobileTouch = typeof window !== 'undefined' && 
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0) && 
+    window.innerWidth < 768;
 
   return (
     <>
@@ -52,15 +55,15 @@ export default function App() {
         style={{ scaleX: useScroll().scrollYProgress }}
       />
       <div
-        className={`min-h-screen text-white overflow-x-hidden relative ${(minimalist || isTouch) ? 'cursor-auto' : 'cursor-none'}`}
+        className={`min-h-screen text-white overflow-x-hidden relative ${(minimalist || isMobileTouch) ? 'cursor-auto' : 'cursor-none'}`}
         style={{ background: "transparent", maxWidth: "100vw" }}
       >
-        {!minimalist && !isTouch && <CursorEffect />}
+        {!minimalist && !isMobileTouch && <CursorEffect />}
         {!minimalist && <VenomBackground />}
         <Navigation minimalist={minimalist} setMinimalist={setMinimalist} />
         <SectionNavigator minimalist={minimalist} />
 
-        <Hero />
+        <Hero minimalist={minimalist} setMinimalist={setMinimalist} />
         <About />
         <Skills />
         <Projects />

@@ -59,7 +59,7 @@ function GlitchText({ text }: { text: string }) {
   );
 }
 
-export function Hero() {
+export function Hero({ minimalist, setMinimalist }: { minimalist: boolean; setMinimalist: (val: boolean) => void }) {
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
 
   useEffect(() => {
@@ -356,7 +356,7 @@ export function Hero() {
                 style={{
                   background: 'transparent',
                   border: '1px solid rgba(220,20,60,0.4)',
-                  clipPath: 'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))',
+                  clipPath: 'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 7px))',
                 }}
                 whileHover={{ scale: 1.05, borderColor: 'rgba(220,20,60,0.8)', background: 'rgba(220,20,60,0.05)' }}
                 whileTap={{ scale: 0.95 }}
@@ -372,6 +372,32 @@ export function Hero() {
               </motion.a>
             </Magnetic>
           </div>
+
+          {/* New Cinematic Toggle on Home Page */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4, duration: 0.6 }}
+            className="mt-10"
+          >
+            <button
+              onClick={() => setMinimalist(!minimalist)}
+              className="group flex items-center gap-4 px-6 py-2 transition-all duration-300"
+              style={{
+                background: 'rgba(220,20,60,0.05)',
+                border: '1px solid rgba(220,20,60,0.2)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '2px'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(220,20,60,0.6)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(220,20,60,0.2)'; }}
+            >
+              <div className={`w-2 h-2 rounded-full transition-all duration-500 ${!minimalist ? 'bg-[#dc143c] shadow-[0_0_10px_#dc143c]' : 'bg-gray-600'}`} />
+              <span className="text-[9px] tracking-[0.4em] uppercase text-white opacity-80 group-hover:opacity-100" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                {minimalist ? 'ENABLE CINEMATIC EFFECTS' : 'CINEMATIC MODE ACTIVE'}
+              </span>
+            </button>
+          </motion.div>
 
           {/* Scroll hint */}
           <motion.div
