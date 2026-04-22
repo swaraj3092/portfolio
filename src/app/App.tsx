@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, useScroll } from "motion/react";
+import { motion, useScroll, AnimatePresence } from "motion/react";
 import { VenomBackground } from "./components/VenomBackground";
 import { Navigation } from "./components/Navigation";
 import { Hero } from "./components/Hero";
