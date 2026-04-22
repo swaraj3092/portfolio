@@ -14,7 +14,6 @@ import { Loader } from "./components/Loader";
 import { GamePanel } from "./components/GamePanel";
 import { CalendarPanel } from "./components/CalendarPanel";
 import { Terminal } from "./components/Terminal";
-import { PerspectiveSection } from "./components/PerspectiveSection";
 
 export default function App() {
   const [gameOpen, setGameOpen] = useState(false);
@@ -59,12 +58,12 @@ export default function App() {
         <Navigation minimalist={minimalist} setMinimalist={setMinimalist} />
         <SectionNavigator minimalist={minimalist} />
 
-        <div id="home"><PerspectiveSection type="fade"><Hero /></PerspectiveSection></div>
-        <div id="about"><PerspectiveSection type="cube"><About /></PerspectiveSection></div>
-        <div id="skills"><PerspectiveSection type="stack"><Skills /></PerspectiveSection></div>
-        <div id="projects"><PerspectiveSection type="cube"><Projects /></PerspectiveSection></div>
-        <div id="experience"><PerspectiveSection type="zoom"><Experience /></PerspectiveSection></div>
-        <div id="contact"><PerspectiveSection type="cube"><Contact /></PerspectiveSection></div>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Experience />
+        <Contact />
 
         {/* Scroll to top */}
         <button
