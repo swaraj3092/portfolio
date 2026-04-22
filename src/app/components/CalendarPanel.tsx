@@ -247,14 +247,22 @@ export function CalendarPanel({ open, onClose, isMobile }: { open: boolean; onCl
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { if (modal) { setModal(null); } else { onClose(); } e.stopPropagation(); }
+      const isEscape = e.key === 'Escape' || e.code === 'Escape';
+      const isLeft = e.key === 'ArrowLeft' || e.code === 'ArrowLeft';
+      const isRight = e.key === 'ArrowRight' || e.code === 'ArrowRight';
+
+      if (isEscape) { 
+        e.stopPropagation(); 
+        e.preventDefault();
+        if (modal) { setModal(null); } else { onClose(); } 
+      }
       if (modal) return;
-      if (e.key === 'ArrowLeft') { e.stopPropagation(); prevMonth(); }
-      if (e.key === 'ArrowRight') { e.stopPropagation(); nextMonth(); }
+      if (isLeft) { e.stopPropagation(); e.preventDefault(); prevMonth(); }
+      if (isRight) { e.stopPropagation(); e.preventDefault(); nextMonth(); }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [open, modal, onClose]);
+  }, [open, modal, onClose, prevMonth, nextMonth]);
 
   const days = daysInMonth(year, month);
   const first = firstDay(year, month);

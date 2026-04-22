@@ -599,9 +599,11 @@ export function GamePanel({ open, onClose, isMobile }: { open: boolean; onClose:
       if (!gsRef.current) return;
       const g = gsRef.current;
 
-      // Prevent these keys from propagating to portfolio nav
-      if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','a','d','A','D','w','s','W','S'].includes(e.key)) {
+      // Prevent these keys from propagating to portfolio nav and prevent scrolling
+      const controlKeys = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','a','d','A','D','w','s','W','S'];
+      if (controlKeys.includes(e.key) || ['Space', 'ArrowLeft', 'ArrowRight', 'KeyA', 'KeyD'].includes(e.code)) {
         e.stopPropagation();
+        e.preventDefault();
       }
 
       if (e.key === 'Escape') { onClose(); return; }
@@ -611,14 +613,16 @@ export function GamePanel({ open, onClose, isMobile }: { open: boolean; onClose:
         return;
       }
       if (e.key === 'r' || e.key === 'R') { if (g.phase === 'gameover') startGame(true); return; }
-      if (e.key === ' ' && g.phase === 'title') { startGame(true); return; }
-      if (e.key === ' ' && g.phase === 'gameover') { startGame(true); return; }
+      if ((e.key === ' ' || e.code === 'Space') && g.phase === 'title') { startGame(true); return; }
+      if ((e.key === ' ' || e.code === 'Space') && g.phase === 'gameover') { startGame(true); return; }
 
       g.keys.add(e.key);
+      if (e.code) g.keys.add(e.code);
     };
     const onUp = (e: KeyboardEvent) => {
       if (!gsRef.current) return;
       gsRef.current.keys.delete(e.key);
+      if (e.code) gsRef.current.keys.delete(e.code);
     };
 
     window.addEventListener('keydown', onDown, true);
