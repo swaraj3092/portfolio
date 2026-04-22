@@ -168,22 +168,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Sim Toggle (Desktop Only) */}
-      {!('ontouchstart' in window) && (
-        <button
-          onClick={() => setIsMobileSim(!isMobileSim)}
-          className="fixed top-20 right-6 z-[100] px-3 py-1 text-[9px] tracking-widest uppercase transition-all duration-300"
-          style={{ 
-            background: isMobileSim ? '#dc143c' : 'rgba(220,20,60,0.1)',
-            border: '1px solid rgba(220,20,60,0.4)',
-            fontFamily: 'Orbitron, sans-serif',
-            color: isMobileSim ? '#fff' : '#dc143c',
-            clipPath: 'polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%)'
-          }}
-        >
-          {isMobileSim ? 'SIM_ACTIVE' : 'MOBILE_SIM'}
-        </button>
-      )}
+
 
       <Terminal />
     </>
