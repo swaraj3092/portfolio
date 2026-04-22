@@ -87,6 +87,8 @@ export default function App() {
       window.removeEventListener('touchend', onTouchEnd);
     };
   }, [isMobileTouch, gameOpen, calOpen]);
+  
+  return (
     <>
       <Loader minimalist={minimalist} setMinimalist={setMinimalist} />
       <motion.div
