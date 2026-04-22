@@ -61,6 +61,24 @@ function GlitchText({ text }: { text: string }) {
 
 export function Hero({ minimalist, setMinimalist }: { minimalist: boolean; setMinimalist: (val: boolean) => void }) {
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const [highScore, setHighScore] = useState(0);
+
+  useEffect(() => {
+    const fetchScore = () => {
+      try {
+        const score = parseInt(localStorage.getItem('si-hi') || '0');
+        setHighScore(score);
+      } catch (e) { /* ignore */ }
+    };
+    fetchScore();
+    // Refresh score when user returns to main page or every 5 seconds
+    const int = setInterval(fetchScore, 5000);
+    window.addEventListener('focus', fetchScore);
+    return () => {
+      clearInterval(int);
+      window.removeEventListener('focus', fetchScore);
+    };
+  }, []);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -138,6 +156,26 @@ export function Hero({ minimalist, setMinimalist }: { minimalist: boolean; setMi
               >
                 FOR OPPORTUNITIES
               </div>
+
+              {/* Dynamic Score HUD */}
+              {highScore > 0 && (
+                <>
+                  <div className="h-8 w-px bg-[#dc143c]/20 my-2" />
+                  <div className="flex flex-col items-center gap-1">
+                    <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '8px', color: '#dc143c', opacity: 0.6 }}>SCORE</span>
+                    <div 
+                      className="text-white font-bold text-[10px]"
+                      style={{ 
+                        fontFamily: 'Orbitron, sans-serif',
+                        writingMode: 'vertical-rl',
+                        letterSpacing: '0.1em'
+                      }}
+                    >
+                      {highScore.toString().padStart(5, '0')}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="flex flex-col gap-1.5 mt-2 opacity-50">
                 <div className="w-1 h-1 bg-[#dc143c] rounded-full" />

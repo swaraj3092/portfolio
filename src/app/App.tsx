@@ -82,10 +82,12 @@ export default function App() {
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 100) {
         if (deltaX > 0) {
           // Swipe Right -> Game
+          if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
           setGameOpen(true);
           setCalOpen(false);
         } else {
           // Swipe Left -> Calendar
+          if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
           setCalOpen(true);
           setGameOpen(false);
         }

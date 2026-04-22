@@ -365,6 +365,7 @@ export function GamePanel({ open, onClose, isMobile }: { open: boolean; onClose:
                 const pts = TYPE_PTS[inv.type];
                 gs.score += pts;
                 gs.ptls.push(...burst(ix, iy, TYPE_COLORS[inv.type], 12));
+                if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
                 setUiScore(gs.score);
                 break;
               }
@@ -392,6 +393,7 @@ export function GamePanel({ open, onClose, isMobile }: { open: boolean; onClose:
               b.active = false;
               gs.lives--;
               gs.ptls.push(...burst(gs.px, pY, '#dc143c', 20));
+              if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([20, 10, 20]);
               setUiLives(gs.lives);
               if (gs.lives <= 0) {
                 gs.phase = 'gameover';
